@@ -45,10 +45,14 @@ app.get('/products/new', (req, res) => {
 });
 
 // Create a new product
-app.post('/products', async (req, res) => {
+app.post('/products', async (req, res, next) => {
+    try{
         const newProduct = new Product(req.body);
         await newProduct.save();
         res.redirect(`/products/${newProduct._id}`);
+    } catch (err){
+        next(err);
+    }
 });
 
 // Show a single product
@@ -66,62 +70,69 @@ app.get('/products/:id', async (req, res, next) => {
 });
 
 // Show form to edit a product
-app.get('/products/:id/edit', async (req, res) => {
+app.get('/products/:id/edit', async (req, res, next) => {
+    try{
         const { id } = req.params;
         const product = await Product.findById(id);
         if (!product) {
             throw new AppError('Product not found', 404);
         }
-        res.render('products/edit', { product, categories });   
+        res.render('products/edit', { product, categories });
+    } catch(err){
+        next(err);
+    }   
 });
 
 // Update a product
-app.put('/products/:id', async (req, res) => {
+app.put('/products/:id', async (req, res, next) => {
+    try{
         const { id } = req.params;
         await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
         res.redirect(`/products/${id}`);
+    } catch (err){
+        next(err);
+    }
 });
 
 // Delete a product
-app.delete('/products/:id', async (req, res) => {
+app.delete('/products/:id', async (req, res, next) => {
     try{
         const { id } = req.params;
         await Product.findByIdAndDelete(id);
         res.redirect('/products');
-    } catch(err) {
+    } catch(err){
         next(err);
     }
 });
 
 // Custom error handling middleware for validation errors
 const handleValidationErr = (err) => {
-    console.dir(err);
-    return new AppError(`Validation Error :- ${err.message}`, 400);
+    const messages = Object.values(err.errors).map(e => e.message).join(', ');
+    return new AppError(messages, 400);
 }
-// This middleware handles errors that occur during the request processing
 
 // Custom error handling middleware for cast errors
 const handleCastErr = (err) => {
     console.dir(err);
     return err;
 }
-// This middleware handles errors that occur during the request processing
 
 // Middleware to handle validation errors
 app.use((err, req, res, next) => {
-    console.log(err.name); // Log the error name
-    if(err.name === 'ValidationError') err = handleValidationErr(err);
-    if (err.name === 'CastError') { 
+    console.log(err.name);
+
+    if(err.name === 'ValidationError'){ 
+        err = handleValidationErr(err);
+    }
+
+    if(err.name === 'CastError') { 
         err = handleCastErr(err);
         return res.status(400).send('Invalid ID format!');
     }
-})
 
-// Custom error handling middleware
-app.use((err, req, res, next) => {
     const { status = 500, message = 'Something went wrong!'} = err;
     res.status(status).send(message);
-});
+})
 
 app.listen(3000, () => {
     console.log('App is listening on port 3000');
