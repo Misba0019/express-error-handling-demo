@@ -1,0 +1,33 @@
+    <%- include('partials/layout.ejs', { title: 'New Product' }) %>
+
+    <h1 class="ms-2">Make New Product</h1>
+    <form action="/products" method="post">
+        
+        <div class=" my-3 mx-2">
+        <label class="form-label" for="name">Product Name:</label>
+        <input type="text" class="form-control" name="name" id="name" placeholder="Name">
+        </div>
+
+        <div class="my-3 mx-2">
+        <label class="form-label" for="price">Product Price:</label>
+        <input type="number" class="form-control" name="price" id="price" placeholder="Price">
+        </div>
+
+        <div class="my-3 mx-2">
+        <label class="form-label" for="category">Select Category:</label>
+        <select class="form-control" name="category">
+            <% for(let category of categories) { %>
+                <option value="<%= category %>">
+                    <%= category %>
+                </option>
+                <% } %>
+        </select>
+        </div>
+
+        <button class="mb-2 ms-2 btn btn-primary">Add Product</button>
+    </form>
+
+    <a class="ms-2" href="/products">Cancel</a>
+</body>
+
+</html>

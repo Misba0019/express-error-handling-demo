@@ -1,0 +1,27 @@
+<%- include('partials/layout.ejs', { title: 'Edit Product' }) %> 
+
+    <h1 class="ms-2">Edit Product</h1>
+    <form action="/products/<%= product._id %>?_method=PUT" method="post">
+        <div class="my-3 mx-2">
+        <label class="form-label" for="name">Product Name:</label>
+        <input type="text" class="form-control" name="name" id="name" placeholder="Name" value="<%= product.name %>">
+        </div>
+
+        <div class="my-3 mx-2">
+        <label class="form-label" for="price">Product Price:</label>
+        <input type="number" class="form-control" name="price" id="price" placeholder="Price" value="<%= product.price %>">
+        </div>
+
+        <div class="my-3 mx-2">
+        <label class="form-label" for="category">Select Category:</label>
+        <select class="form-control" name="category" id="category">
+            <% for(let category of categories) { %>
+                <option value="<%= category %>" <%=product.category===category ? 'selected' : '' %>><%= category %>
+                </option>
+                <% } %>
+        </select>
+        </div>
+
+        <button class="mb-2 ms-2 btn btn-primary">Edit</button>
+    </form>
+    <a class="ms-2" href="/products/<%= product._id %>">Cancel</a>

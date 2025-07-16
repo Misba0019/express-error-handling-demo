@@ -1,0 +1,35 @@
+<%- include('partials/layout.ejs', { title: 'Product Details'}) %>
+
+
+    <div class="card">
+
+        <div class="card-body">
+            <h5 class="card-title">
+                <%= product.name %>
+            </h5>
+            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi quidem est officiis
+                animi consequatur doloribus nemo similique magni libero veniam suscipit optio dolor doloremque non?
+                Distinctio fugit eum quis quidem?Lorem ipsum dolor sit amet consectetu adipisicing elit.</p>
+        </div>
+
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Price: $<%= product.price %>
+            </li>
+            <li class="list-group-item">Category: <a href="/products?category=<%= product.category %>">
+                    <%= product.category %>
+                </a> </li>
+            <li class="list-group-item">Id: <%= product._id %>
+            </li>
+        </ul>
+
+        <div class="card-body">
+            <a class="card-link" href="/products/<%= product._id%>/edit">Edit</a>
+            <form class="" action="/products/<%=product._id%>?_method=DELETE" method="post">
+                <button class="btn btn-primary">Delete</button>
+            </form>
+        </div>
+    </div>
+
+    </body>
+
+    </html>
